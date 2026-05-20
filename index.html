@@ -3,146 +3,115 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Command Centre</title>
+<title>Command Centre</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #0a0a0a;
-    --surface: #111111;
-    --surface2: #1a1a1a;
-    --border: rgba(255,255,255,0.07);
-    --border2: rgba(255,255,255,0.12);
-    --text: #f0f0f0;
-    --muted: #666;
+    --bg: #080808;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.16);
+    --text: #ffffff;
+    --muted: #777;
+    --muted2: #aaa;
     --accent: #c8f04a;
+    --accent-dim: rgba(200,240,74,0.1);
     --font-head: 'Syne', sans-serif;
     --font-mono: 'DM Mono', monospace;
   }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-head); min-height: 100vh; }
+  .app { max-width: 800px; margin: 0 auto; padding: 2rem 1.25rem 5rem; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-head);
-    min-height: 100vh;
-  }
-
-  .app { max-width: 700px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
-
-  .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  /* COUNTDOWN BANNER */
+  .countdown-banner {
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,74,0.3);
+    border-radius: 12px;
+    padding: 14px 20px;
     margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 0.5px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
+  .countdown-label { font-family: var(--font-mono); font-size: 12px; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .countdown-val { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--accent); }
+  .countdown-sub { font-family: var(--font-mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-  .day-name { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; line-height: 1; }
-  .day-date { font-size: 12px; color: var(--muted); font-family: var(--font-mono); margin-top: 4px; }
-
+  /* HEADER */
+  .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border2); }
+  .day-name { font-size: 42px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+  .day-date { font-size: 13px; color: var(--muted); font-family: var(--font-mono); margin-top: 6px; }
   .progress-wrap { text-align: right; }
-  .progress-pct { font-size: 32px; font-weight: 700; color: var(--accent); line-height: 1; font-family: var(--font-mono); }
-  .progress-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .progress-bar { width: 80px; height: 3px; background: var(--surface2); border-radius: 99px; margin-top: 6px; margin-left: auto; overflow: hidden; }
-  .progress-fill { height: 3px; background: var(--accent); border-radius: 99px; transition: width 0.5s ease; }
+  .progress-pct { font-size: 44px; font-weight: 800; color: var(--accent); line-height: 1; font-family: var(--font-mono); letter-spacing: -1px; }
+  .progress-label { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--font-mono); }
+  .progress-bar { width: 100px; height: 4px; background: var(--surface2); border-radius: 99px; margin-top: 8px; margin-left: auto; overflow: hidden; }
+  .progress-fill { height: 4px; background: var(--accent); border-radius: 99px; transition: width 0.5s ease; }
 
-  .day-nav { display: flex; gap: 6px; margin-bottom: 1.5rem; flex-wrap: wrap; }
-  .day-btn {
-    font-family: var(--font-mono); font-size: 11px; padding: 5px 12px;
-    border: 0.5px solid var(--border2); border-radius: 20px;
-    background: transparent; color: var(--muted); cursor: pointer; transition: all 0.15s;
-  }
+  /* DAY NAV */
+  .day-nav { display: flex; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap; }
+  .day-btn { font-family: var(--font-mono); font-size: 13px; font-weight: 500; padding: 8px 18px; border: 1px solid var(--border2); border-radius: 99px; background: transparent; color: var(--muted2); cursor: pointer; transition: all 0.15s; }
   .day-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .day-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); font-weight: 500; }
+  .day-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
 
-  .section { margin-bottom: 1rem; }
-  .section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .section-title { font-size: 10px; font-family: var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  /* SECTION */
+  .section { margin-bottom: 1.5rem; }
+  .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding: 0 2px; }
+  .section-bar { width: 4px; height: 20px; border-radius: 99px; flex-shrink: 0; }
+  .section-title { font-size: 11px; font-family: var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted2); font-weight: 500; }
 
-  .task {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 10px 12px; background: var(--surface);
-    border: 0.5px solid var(--border); border-radius: 8px;
-    margin-bottom: 6px; cursor: pointer; transition: border-color 0.15s, background 0.15s;
-  }
+  /* TASK */
+  .task { display: flex; align-items: flex-start; gap: 14px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
   .task:hover { border-color: var(--border2); background: var(--surface2); }
-  .task.done { opacity: 0.35; }
-  .task.done .task-title { text-decoration: line-through; }
-
-  .cb {
-    width: 16px; height: 16px; border: 1.5px solid var(--border2); border-radius: 4px;
-    flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s; font-size: 10px; color: var(--bg);
-  }
+  .task.done { opacity: 0.28; }
+  .task.done .task-title { text-decoration: line-through; color: var(--muted); }
+  .cb { width: 24px; height: 24px; border: 2px solid var(--border2); border-radius: 6px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; font-size: 13px; color: #000; font-weight: 700; }
   .task.done .cb { background: var(--accent); border-color: var(--accent); }
-
   .task-content { flex: 1; min-width: 0; }
-  .task-title { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.3; }
-  .task-sub { font-size: 11px; color: var(--muted); margin-top: 3px; font-family: var(--font-mono); line-height: 1.6; }
-
-  .rule-box { background: var(--surface); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-top: 1.5rem; }
-  .rule-box-title { font-size: 9px; font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
-  .rule-item { font-size: 11px; color: var(--muted); font-family: var(--font-mono); padding: 5px 0; border-bottom: 0.5px solid var(--border); display: flex; gap: 8px; }
-  .rule-item:last-child { border-bottom: none; }
-  .rule-num { color: var(--accent); flex-shrink: 0; }
-
-  /* Add Task UI */
-  .add-btn {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--font-mono); font-size: 11px; color: var(--muted);
-    background: none; border: 0.5px dashed var(--border2); border-radius: 8px;
-    padding: 8px 12px; cursor: pointer; width: 100%; margin-top: 4px;
-    transition: all 0.15s;
-  }
-  .add-btn:hover { color: var(--accent); border-color: var(--accent); }
-
-  .add-form { background: var(--surface2); border: 0.5px solid var(--border2); border-radius: 8px; padding: 12px; margin-top: 4px; }
-  .add-form input, .add-form textarea, .add-form select {
-    width: 100%; background: var(--bg); border: 0.5px solid var(--border2);
-    border-radius: 6px; color: var(--text); font-family: var(--font-mono);
-    font-size: 12px; padding: 8px 10px; margin-bottom: 8px; outline: none;
-    transition: border-color 0.15s;
-  }
-  .add-form input:focus, .add-form textarea:focus, .add-form select:focus { border-color: var(--accent); }
-  .add-form textarea { resize: vertical; min-height: 60px; }
-  .add-form select option { background: var(--bg); }
-  .form-row { display: flex; gap: 8px; }
-  .form-row button {
-    flex: 1; padding: 8px; border-radius: 6px; font-family: var(--font-mono);
-    font-size: 11px; cursor: pointer; border: none; transition: all 0.15s;
-  }
-  .btn-save { background: var(--accent); color: var(--bg); font-weight: 500; }
-  .btn-cancel { background: var(--surface); color: var(--muted); border: 0.5px solid var(--border2) !important; }
-
-  .task-delete {
-    background: none; border: none; color: transparent; font-size: 14px;
-    cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; margin-top: 1px;
-    transition: color 0.15s;
-  }
+  .task-title { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .task-sub { font-size: 13px; color: var(--muted2); margin-top: 6px; font-family: var(--font-mono); line-height: 1.7; }
+  .task-delete { background: none; border: none; color: transparent; font-size: 18px; cursor: pointer; padding: 2px 4px; flex-shrink: 0; margin-top: 2px; transition: color 0.15s; line-height: 1; }
   .task:hover .task-delete { color: #444; }
   .task-delete:hover { color: #f04a4a !important; }
 
-  .reset-day-btn {
-    font-family: var(--font-mono); font-size: 10px; color: var(--muted);
-    background: none; border: none; cursor: pointer; margin-top: 0.5rem;
-    display: block; text-align: right; width: 100%;
-    transition: color 0.15s;
-  }
-  .reset-day-btn:hover { color: var(--accent); }
+  /* ADD */
+  .add-btn { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-mono); font-size: 13px; color: var(--muted); background: none; border: 1px dashed var(--border2); border-radius: 12px; padding: 14px 18px; cursor: pointer; width: 100%; margin-top: 6px; transition: all 0.15s; font-weight: 500; }
+  .add-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-dim); }
+  .add-form { background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 16px; margin-top: 6px; }
+  .add-form input, .add-form textarea, .add-form select { width: 100%; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; color: var(--text); font-family: var(--font-mono); font-size: 14px; padding: 12px 14px; margin-bottom: 10px; outline: none; transition: border-color 0.15s; }
+  .add-form input:focus, .add-form textarea:focus, .add-form select:focus { border-color: var(--accent); }
+  .add-form textarea { resize: vertical; min-height: 70px; }
+  .add-form select option { background: var(--bg); }
+  .form-row { display: flex; gap: 10px; }
+  .form-row button { flex: 1; padding: 12px; border-radius: 8px; font-family: var(--font-mono); font-size: 13px; cursor: pointer; border: none; transition: all 0.15s; font-weight: 500; }
+  .btn-save { background: var(--accent); color: #000; font-weight: 700; }
+  .btn-cancel { background: var(--surface); color: var(--muted); border: 1px solid var(--border2) !important; }
 
-  .saved-indicator {
-    font-family: var(--font-mono); font-size: 10px; color: var(--accent);
-    text-align: center; padding: 6px; opacity: 0; transition: opacity 0.3s;
-    margin-bottom: 0.5rem;
-  }
+  /* RULES */
+  .rule-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-top: 2rem; }
+  .rule-box-title { font-size: 11px; font-family: var(--font-mono); color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; font-weight: 500; }
+  .rule-item { font-size: 14px; color: var(--muted2); font-family: var(--font-mono); padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+  .rule-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .rule-num { color: var(--accent); flex-shrink: 0; font-weight: 500; }
+
+  /* MISC */
+  .reset-day-btn { font-family: var(--font-mono); font-size: 12px; color: var(--muted); background: none; border: none; cursor: pointer; margin-top: 0.75rem; display: block; text-align: right; width: 100%; transition: color 0.15s; padding: 4px 0; }
+  .reset-day-btn:hover { color: var(--accent); }
+  .saved-indicator { font-family: var(--font-mono); font-size: 12px; color: var(--accent); text-align: center; padding: 6px; opacity: 0; transition: opacity 0.3s; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+
+  /* LOCKED STATE */
+  .locked-overlay { text-align: center; padding: 3rem 1rem; }
+  .locked-emoji { font-size: 48px; margin-bottom: 1rem; }
+  .locked-title { font-size: 28px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .locked-sub { font-size: 14px; color: var(--muted2); font-family: var(--font-mono); line-height: 1.7; }
+  .locked-date { font-size: 32px; font-weight: 800; color: var(--accent); font-family: var(--font-mono); margin: 1rem 0; }
 </style>
 </head>
 <body>
 <div class="app">
+
+  <div id="countdown-area"></div>
 
   <div class="top-bar">
     <div>
@@ -172,96 +141,131 @@
 </div>
 
 <script>
-const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const FULL = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+// ── START DATE ──
+const START_DATE = new Date('2026-05-30');
+
+const DAYS  = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const FULL  = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 
 const SECTION_META = {
-  gym:       { label: 'Gym / Fitness',        color: '#c8f04a' },
-  cds:       { label: 'CDS Prep',             color: '#4af0c8' },
-  cse:       { label: 'CSE / Job Readiness',  color: '#4a8af0' },
-  yt:        { label: 'YouTube / Animation',  color: '#f04a8a' },
-  nutrition: { label: 'Nutrition Business',   color: '#f0a84a' },
-  net:       { label: 'Outreach / Network',   color: '#a84af0' },
-  skin:      { label: 'Skincare',             color: '#888888' },
-  invest:    { label: 'Investments',          color: '#4af0c8' },
-  custom:    { label: 'Custom',               color: '#f0f0f0' },
+  gym:       { label: 'Gym / Fitness',       color: '#c8f04a' },
+  cds:       { label: 'CDS Prep',            color: '#4af0c8' },
+  cse:       { label: 'Job Skills',          color: '#4a8af0' },
+  yt:        { label: 'YouTube',             color: '#f04a8a' },
+  nutrition: { label: 'Nutrition Client',    color: '#f0a84a' },
+  skin:      { label: 'Skincare',            color: '#888888' },
+  custom:    { label: 'Custom',              color: '#ffffff' },
 };
 
-// Base schedule — loaded from localStorage on top of this
+// ── CDS PHASE 1 WEEKLY ROTATION (from study plan PDF) ──
+// Week alternates: History → English → Geography → English → History → Science → Mock
+const CDS_SCHEDULE = {
+  0: { label: 'CDS — History', detail: 'Ancient India: Indus Valley → Vedic Age → Mauryan Empire\nDisha NCERT summary + 10 new vocab words (write + use in sentence)\nBook: Lucent\'s GK + NCERT Class 11 History' },
+  1: { label: 'CDS — English', detail: 'Wren & Martin: Tenses + Parts of Speech (grammar rules only)\n+ 1 reading comprehension passage timed\nTarget: finish core grammar rules by end of Phase 1' },
+  2: { label: 'CDS — Geography', detail: 'Physical Geography: Maps, Latitudes, Longitudes, Indian rivers\nDisha NCERT summary + 20 min current affairs (Inshorts)\nNote one important headline in your logbook' },
+  3: { label: 'CDS — English', detail: 'Error Spotting + Sentence Ordering practice\n+ 1 section from Arihant CDS previous year paper (timed)\nFocus: get the WHY behind each answer' },
+  4: { label: 'CDS — History Revision', detail: 'Medieval India: Sultanate era + Mughal empire\n+ Revise all vocab words from this week\nDisha NCERT summary — make short notes as you go' },
+  5: { label: 'CDS — Science', detail: 'Physics + Biology: NCERT Class 9–10 highlights\nDisha summary only — do not go deep, broad coverage first\n+ Short notes review of entire week\'s topics' },
+  6: { label: 'CDS — Full Mock Test', detail: 'Both papers: English + GK under timed conditions\nNo phone, no breaks — treat it like the real exam\nAfter: detailed mistake analysis — WHY was each answer wrong?' },
+};
+
+// ── CSE PHASE 1 WEEKLY ROTATION (start from scratch, beginner) ──
+const CSE_SCHEDULE = {
+  0: { label: 'Skills — Python Basics', detail: 'Variables, data types, loops, functions\nResource: freeCodeCamp Python for Beginners (YouTube)\nBuild: write 3 small scripts by end of session' },
+  1: { label: 'Skills — HTML + CSS Basics', detail: 'Structure a webpage from scratch — no frameworks yet\nResource: The Odin Project (free, structured)\nBuild: a simple personal page with your name and links' },
+  2: { label: 'Skills — JavaScript Basics', detail: 'Variables, functions, DOM manipulation\nResource: javascript.info (read + do exercises)\nBuild: make a button that changes text on click' },
+  3: { label: 'Skills — Git + GitHub', detail: 'Init a repo, commit, push, pull — understand what each does\nResource: GitHub\'s own beginner guide\nBuild: push today\'s code to GitHub with a clean commit message' },
+  4: { label: 'Skills — AI Tools in Practice', detail: 'Use ChatGPT / Gemini API to build one small automation\nIdea: a script that summarises text or answers questions\nDocument what you built and push to GitHub' },
+  5: { label: 'Skills — Build Day', detail: 'Take everything from this week and build one small project\nNo tutorials — just build from memory + Google\nPush to GitHub with a README explaining what it does' },
+  6: { label: 'Skills — Review + Plan', detail: 'Review what you built this week\nNote what you don\'t understand — Google it\nPlan next week\'s focus area based on gaps' },
+};
+
+// ── BASE SCHEDULE PER DAY ──
+// Gym: Tue=Push, Wed=Core, Fri=Pull, Sun=Legs
+// Rest: Mon, Thu, Sat
 const BASE_SCHEDULE = {
-  0: {
-    gym:       { label: 'Tactical Cardio', detail: '5km run + 2000 skips\nWarm-up: 2 min bike/incline walk → prime-up drills (not actual sets)' },
-    cds:       { label: 'History — Ancient India', detail: 'Indus Valley → Mauryas (Disha NCERT summary)\n+ 10 new vocabulary words — write each, use in a sentence' },
-    cse:       { label: 'Full-Stack Build', detail: 'Build a functional landing page — Next.js / Tailwind\nFocus: layout, spacing, responsiveness' },
-    yt:        { label: 'Concept & Scripting', detail: 'Finalise scripts for both shorts this week\nClear premise, punchline, stickman action cues' },
-    net:       { label: 'Outreach — Freelance Clients', detail: 'Follow up with 2 potential coding / freelance clients\nPlatform: LinkedIn, Instagram — whichever gets a reply' },
-    nutrition: { label: 'Nutrition Study', detail: 'High-protein vegetarian meal planning + supplement timing\nFocus: Creatine & Ashwagandha protocols' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge 2 min → face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream (dark circles) → barrier cream' },
+  0: { // Monday — REST DAY
+    cds:  CDS_SCHEDULE[0],
+    cse:  CSE_SCHEDULE[0],
+    yt:   { label: 'YouTube — Concept & Script', detail: 'Decide topic for next AI short\nWrite full script — clear hook, value, CTA\nSend draft to editing team for feedback' },
+    skin: { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
   },
-  1: {
-    gym:       { label: 'Push Day — Main: Incline Press', detail: 'A) Incline Press × 4 sets | 6–10 reps | 2–3 min rest\nB) Chest Machine × 3 sets | 8–12 reps\nC) DB Lateral Raise × 3 sets | 10+ reps\nD) Pec Deck / Cable Fly × 3 sets | 10+ reps\nE) Dips × 3 sets | 10+ reps\n3-sec eccentric — if rep not clean, it doesn\'t count' },
-    cds:       { label: 'English — Grammar Fundamentals', detail: 'Wren & Martin: Tenses + Parts of Speech rules\n+ 1 reading comprehension passage (timed)' },
-    cse:       { label: 'AI-Automation Practice', detail: 'Integrate Gemini or OpenAI API into a local app\nAutomate one simple task — show working output' },
-    yt:        { label: 'Keyframe Animation — Short 1', detail: 'Stickman posing and primary movements for Short 1\nFocus: clean poses, clear action beats' },
-    nutrition: { label: 'Nutrition Study', detail: 'Supplement timing — pre/intra/post workout\nHigh-protein vegetarian sources deep dive' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge 2 min → face wash → moisturiser → SPF 50\nPM: Double cleanse → spot treatment if needed → barrier cream' },
+  1: { // Tuesday — PUSH DAY
+    gym:  { label: 'Push Day — Main: Incline Press', detail: 'A) Incline Press × 4 sets | 6–10 reps | 2–3 min rest\nB) Chest Machine × 3 sets | 8–12 reps\nC) DB Lateral Raise × 3 sets | 10+ reps\nD) Pec Deck / Cable Fly × 3 sets | 10+ reps\nE) Dips × 3 sets | 10+ reps\n3-sec eccentric — if rep not clean, it doesn\'t count' },
+    cds:  CDS_SCHEDULE[1],
+    cse:  CSE_SCHEDULE[1],
+    skin: { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → spot treatment if needed → barrier cream' },
   },
-  2: {
-    gym:       { label: 'Active Recovery', detail: 'Lower body warm-up drills + mobility work\nLight boxing — form, not intensity\nBodyweight squats 10–15, dynamic lunges 10–12, hip hinge 8–10' },
-    cds:       { label: 'Geography — Physical Geography', detail: 'Maps, Latitudes, Longitudes (Disha NCERT summary)\n+ 20 min current affairs — Inshorts, note one key headline' },
-    cse:       { label: 'Database & Logic', detail: 'SQL basics + CRUD operations\nUnderstand data flow — know what each query does, don\'t just vibe-code it' },
-    yt:        { label: 'Keyframe Animation — Short 2', detail: 'Stickman posing and primary movements for Short 2\nMatch pace and energy to Short 1 style' },
-    net:       { label: 'Outreach — Animation Creators', detail: 'Cold DM 3 creators in the animation space\nAsk for feedback or collab — short, genuine message' },
-    nutrition: { label: 'Nutrition Content', detail: 'Film or write one post: "Nutrition for Military Conditioning"\nPractical, backed by your knowledge — keep it real' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge 2 min → face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
+  2: { // Wednesday — CORE DAY
+    gym:  { label: 'Core Day', detail: 'Plank holds × 3 sets | 45–60 sec\nHanging knee raises × 3 sets | 12–15 reps\nCable crunches × 3 sets | 15–20 reps\nLeg raises × 3 sets | 12–15 reps\nFocus: controlled movement, no momentum' },
+    cds:  CDS_SCHEDULE[2],
+    cse:  CSE_SCHEDULE[2],
+    yt:   { label: 'YouTube — Animation / Production', detail: 'Work on current short — keyframes, motion, pacing\nSend progress update to editing team\nTarget: rough cut ready by Friday' },
+    skin: { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
   },
-  3: {
-    gym:       { label: 'Pull Day — Main: Cable Row', detail: 'A) Cable Row / Chest-Assisted Row × 4 sets | 6–10 reps | 2–3 min\nB) Lat Pulldowns / Pull-ups × 3 sets | 8–12 reps\nC) Pull-overs × 3 sets | 10+ reps\nD) DB Rear Delt Fly / Reverse Pec Deck × 3 sets | 10+ reps\nE) Incline DB Curl + Hammer Curls × 3 sets | 10+ reps\n3-sec eccentric — target mind-muscle, calm the weights' },
-    cds:       { label: 'English — Error Spotting & Sentence Ordering', detail: 'Wren & Martin error rules\n+ 1 section from CDS previous year paper (timed)' },
-    cse:       { label: 'Debugging Sprint', detail: 'Find a broken open-source project on GitHub\nFix 2–3 issues using AI tools — document what you changed and why' },
-    yt:        { label: 'In-betweening & Cleanup', detail: 'Smooth motion between keyframes for both shorts\nAdd props, timing polish, scene transitions' },
-    net:       { label: 'Outreach — Nutrition Clients', detail: 'Cold DM 5 potential nutrition consultation clients\nFriends-of-friends or niche followers — warm, helpful tone' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge 2 min → face wash → moisturiser → SPF 50\nPM: Double cleanse → spot treatment → barrier cream' },
+  3: { // Thursday — REST DAY
+    cds:  CDS_SCHEDULE[3],
+    cse:  CSE_SCHEDULE[3],
+    yt:   { label: 'YouTube — Review Edit', detail: 'Review edited draft from team\nRequest specific changes — pacing, music, transitions\nApprove or send back for revision' },
+    skin: { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → spot treatment if needed → barrier cream' },
   },
-  4: {
-    gym:       { label: 'High-Rep Calisthenics — AMRAP 30 min', detail: 'Pushups + Pull-ups + Core circuit\nAs many rounds as possible in 30 min — clean reps only\nNo jerk motion. If rep not clean, it doesn\'t count.' },
-    cds:       { label: 'History — Medieval India + Weekly Vocab Revision', detail: 'Sultanate era + Mughal era (Disha NCERT summary)\n+ Revise all vocab words collected this week' },
-    cse:       { label: 'Blockchain Portfolio Update', detail: 'Update Secure Voting Framework (Hyperledger Fabric)\nPush a clean commit to GitHub — this is your portfolio proof' },
-    yt:        { label: 'Asset Handoff to Editing Team', detail: 'Package project files\nMusic/SFX notes, edit instructions, upload deadline reminder' },
-    net:       { label: 'Outreach — Nutrition Clients cont.', detail: 'Continue cold DMs — follow up on any Thursday replies\nGoal: get one response this week' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge 2 min → face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
+  4: { // Friday — PULL DAY + NUTRITION CHECK
+    gym:       { label: 'Pull Day — Main: Cable Row', detail: 'A) Cable Row / Chest-Assisted Row × 4 sets | 6–10 reps | 2–3 min\nB) Lat Pulldowns / Pull-ups × 3 sets | 8–12 reps\nC) Pull-overs × 3 sets | 10+ reps\nD) DB Rear Delt Fly / Reverse Pec Deck × 3 sets | 10+ reps\nE) Incline DB Curl + Hammer Curls × 3 sets | 10+ reps\n3-sec eccentric — calm the weights, target mind-muscle' },
+    cds:       CDS_SCHEDULE[4],
+    cse:       CSE_SCHEDULE[4],
+    nutrition: { label: 'Nutrition Client — Weekly Progress Check', detail: 'Review client\'s week: weight, energy, adherence, mood\nAdjust plan if needed — calories, protein targets, meal timing\nLog notes and send feedback to client' },
+    skin:      { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
   },
-  5: {
-    gym:       { label: 'Legs — Main: Squats / Hack Squat', detail: 'A) Squats / Hack Squat × 4 sets | 6–10 reps | 2–3 min rest\nB) Lying Leg Curl / RDL × 3 sets | 8–12 reps\nC) Leg Extensions × 3 sets | 10+ reps\nD) Hip Thrusts × 3 sets | 10+ reps\nE) Calves × 3 sets | 10+ reps\nBottom held still — no bounce, 3-sec eccentric' },
-    cds:       { label: 'Science — Physics & Biology', detail: 'NCERT Class 9–10 highlights (Disha summary)\n+ Short notes review of the entire week' },
-    cse:       { label: 'Freelance Readiness', detail: 'Work on your "Hire Me" page — 3 clear productised services\nSkills to show: AI tools, debugging, blockchain, vibe-coding' },
-    yt:        { label: 'Review Edited Draft', detail: 'Review the edited shorts from your team\nRequest specific changes — music timing, transitions, pacing' },
-    invest:    { label: 'Investment Log', detail: 'Log current value: Silver ETFs + Mutual Funds + Gold\nRead one weekly market wrap-up — REITs + major tech moves' },
-    skin:      { label: 'Skincare + Weekly Treatment', detail: 'AM: Ice plunge → face wash → moisturiser → SPF 50\nPM: Weekly deep exfoliating mask (mom\'s recommendation) → barrier cream' },
+  5: { // Saturday — REST DAY
+    cds:  CDS_SCHEDULE[5],
+    cse:  CSE_SCHEDULE[5],
+    yt:   { label: 'YouTube — Upload + Admin', detail: 'Upload finalised short to channel\nWrite SEO title, description, tags\nSchedule community post — engage with comments from last upload' },
+    skin: { label: 'Skincare + Weekly Treatment', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Weekly deep exfoliating mask (mom\'s recommendation) → barrier cream' },
   },
-  6: {
-    gym:       { label: 'Full Rest Day', detail: 'No physical activity\nRest is training — this is when you actually grow' },
-    cds:       { label: 'Full Mock Test — Both Papers', detail: 'English + GK under timed conditions\nNo phone, no breaks — treat it like exam day\nAfter: detailed mistake analysis — WHY was each wrong?' },
-    cse:       { label: 'System Review & GitHub Push', detail: 'Document everything built this week\nPush all code to GitHub — clean commits, clear messages' },
-    yt:        { label: 'Channel Admin', detail: 'Upload finalised shorts\nSEO descriptions + community post planning\nCheck analytics from previous uploads' },
-    net:       { label: 'Social — Friends & Catch-up', detail: 'In person or over gaming\nThis is scheduled, not optional — maintain the social life' },
-    skin:      { label: 'Skincare', detail: 'AM: Ice plunge → face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
+  6: { // Sunday — LEGS DAY
+    gym:  { label: 'Legs — Main: Squats / Hack Squat', detail: 'A) Squats / Hack Squat × 4 sets | 6–10 reps | 2–3 min rest\nB) Lying Leg Curl / RDL × 3 sets | 8–12 reps\nC) Leg Extensions × 3 sets | 10+ reps\nD) Hip Thrusts × 3 sets | 10+ reps\nE) Calves × 3 sets | 10+ reps\nBottom held still — no bounce, 3-sec eccentric' },
+    cds:  CDS_SCHEDULE[6],
+    cse:  CSE_SCHEDULE[6],
+    skin: { label: 'Skincare', detail: 'AM: Face wash → moisturiser → SPF 50\nPM: Double cleanse → eye cream → barrier cream' },
   },
 };
 
-// STATE — stored in localStorage
-function getStorageKey(day) { return `cmd_tasks_d${day}`; }
-function getCheckedKey(day) { return `cmd_checked_d${day}`; }
-function getCheckedDateKey(day) { return `cmd_checked_date_d${day}`; }
+// ── STORAGE ──
+function getStorageKey(day)        { return `v2_tasks_d${day}`; }
+function getCheckedKey(day)        { return `v2_checked_d${day}`; }
+function getCheckedDateKey(day)    { return `v2_checked_date_d${day}`; }
+
+// Gym-only days before May 30
+const PRE_START_GYM = {
+  1: { gym: { label: 'Push Day — Main: Incline Press', detail: 'A) Incline Press × 4 sets | 6–10 reps | 2–3 min rest\nB) Chest Machine × 3 sets | 8–12 reps\nC) DB Lateral Raise × 3 sets | 10+ reps\nD) Pec Deck / Cable Fly × 3 sets | 10+ reps\nE) Dips × 3 sets | 10+ reps\n3-sec eccentric — if rep not clean, it doesn\'t count' } },
+  2: { gym: { label: 'Core Day', detail: 'Plank holds × 3 sets | 45–60 sec\nHanging knee raises × 3 sets | 12–15 reps\nCable crunches × 3 sets | 15–20 reps\nLeg raises × 3 sets | 12–15 reps\nFocus: controlled movement, no momentum' } },
+  4: { gym: { label: 'Pull Day — Main: Cable Row', detail: 'A) Cable Row × 4 sets | 6–10 reps | 2–3 min\nB) Lat Pulldowns / Pull-ups × 3 sets | 8–12 reps\nC) Pull-overs × 3 sets | 10+ reps\nD) DB Rear Delt Fly × 3 sets | 10+ reps\nE) Incline DB Curl + Hammer Curls × 3 sets | 10+ reps\n3-sec eccentric — calm the weights' } },
+  6: { gym: { label: 'Legs — Main: Squats / Hack Squat', detail: 'A) Squats / Hack Squat × 4 sets | 6–10 reps | 2–3 min rest\nB) Lying Leg Curl / RDL × 3 sets | 8–12 reps\nC) Leg Extensions × 3 sets | 10+ reps\nD) Hip Thrusts × 3 sets | 10+ reps\nE) Calves × 3 sets | 10+ reps\nBottom held still — no bounce, 3-sec eccentric' } },
+};
+
+function isBeforeStart() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const start = new Date(START_DATE); start.setHours(0,0,0,0);
+  return now < start;
+}
 
 function loadTasks(day) {
   try {
     const saved = localStorage.getItem(getStorageKey(day));
     if (saved) return JSON.parse(saved);
   } catch(e) {}
-  // Return base schedule for this day
+  // Before May 30 — only show gym tasks on gym days, nothing else
+  if (isBeforeStart()) {
+    const gymOnly = PRE_START_GYM[day] || {};
+    if (Object.keys(gymOnly).length === 0) return []; // rest day, no tasks
+    return Object.entries(gymOnly).map(([key, val]) => ({
+      id: key + '_base', section: key, label: val.label, detail: val.detail
+    }));
+  }
   const base = BASE_SCHEDULE[day] || {};
-  return Object.entries(base).map(([key, val]) => ({ id: key + '_base', section: key, label: val.label, detail: val.detail }));
+  return Object.entries(base).map(([key, val]) => ({
+    id: key + '_base', section: key, label: val.label, detail: val.detail
+  }));
 }
 
 function saveTasks(day, tasks) {
@@ -270,55 +274,64 @@ function saveTasks(day, tasks) {
 
 function loadChecked(day) {
   try {
-    const dateKey = getCheckedDateKey(day);
-    const savedDate = localStorage.getItem(dateKey);
-    const today = new Date().toDateString();
-    // Reset checked state if it's a new week occurrence of this day
-    if (savedDate !== today + '_' + day) return {};
     const saved = localStorage.getItem(getCheckedKey(day));
     return saved ? JSON.parse(saved) : {};
   } catch(e) { return {}; }
 }
 
 function saveChecked(day, checked) {
-  try {
-    const today = new Date().toDateString();
-    localStorage.setItem(getCheckedDateKey(day), today + '_' + day);
-    localStorage.setItem(getCheckedKey(day), JSON.stringify(checked));
-  } catch(e) {}
+  try { localStorage.setItem(getCheckedKey(day), JSON.stringify(checked)); } catch(e) {}
 }
 
-let currentDay = (() => {
-  const d = new Date().getDay();
-  return d === 0 ? 6 : d - 1;
-})();
-
+// ── STATE ──
+let currentDay = (() => { const d = new Date().getDay(); return d === 0 ? 6 : d - 1; })();
 let tasksCache = {};
 let checkedCache = {};
+let addFormOpen = false;
 
 function getTasks(day) {
   if (!tasksCache[day]) tasksCache[day] = loadTasks(day);
   return tasksCache[day];
 }
-
 function getChecked(day) {
   if (!checkedCache[day]) checkedCache[day] = loadChecked(day);
   return checkedCache[day];
 }
-
 function calcProgress(day) {
   const tasks = getTasks(day);
   const checked = getChecked(day);
   if (!tasks.length) return 0;
   return Math.round((Object.values(checked).filter(Boolean).length / tasks.length) * 100);
 }
-
 function showSaved() {
   const el = document.getElementById('saved-indicator');
   el.style.opacity = '1';
   setTimeout(() => { el.style.opacity = '0'; }, 1200);
 }
 
+// ── COUNTDOWN ──
+function renderCountdown() {
+  const area = document.getElementById('countdown-area');
+  const now = new Date();
+  const start = new Date(START_DATE);
+  start.setHours(0,0,0,0);
+  now.setHours(0,0,0,0);
+  const diff = Math.ceil((start - now) / (1000 * 60 * 60 * 24));
+  if (diff <= 0) { area.innerHTML = ''; return; }
+  area.innerHTML = `
+    <div class="countdown-banner">
+      <div>
+        <div class="countdown-label">Routine starts</div>
+        <div class="countdown-sub">30 May 2026 — enjoy the break</div>
+      </div>
+      <div style="text-align:right">
+        <div class="countdown-val">${diff} day${diff !== 1 ? 's' : ''}</div>
+        <div class="countdown-sub">to go</div>
+      </div>
+    </div>`;
+}
+
+// ── RENDER ──
 function updateHeader(day) {
   document.getElementById('day-name').textContent = FULL[day];
   const d = new Date();
@@ -340,8 +353,6 @@ function renderNav() {
   });
 }
 
-let addFormOpen = null; // section key or null
-
 function renderTasks(day) {
   const area = document.getElementById('task-area');
   area.innerHTML = '';
@@ -355,7 +366,6 @@ function renderTasks(day) {
     sections[t.section].push(t);
   });
 
-  // Render each section
   Object.entries(sections).forEach(([secKey, secTasks]) => {
     const meta = SECTION_META[secKey] || SECTION_META.custom;
     const wrap = document.createElement('div');
@@ -363,7 +373,7 @@ function renderTasks(day) {
 
     const header = document.createElement('div');
     header.className = 'section-header';
-    header.innerHTML = `<div class="section-dot" style="background:${meta.color}"></div><div class="section-title">${meta.label}</div>`;
+    header.innerHTML = `<div class="section-bar" style="background:${meta.color}"></div><div class="section-title">${meta.label}</div>`;
     wrap.appendChild(header);
 
     secTasks.forEach(t => {
@@ -376,8 +386,8 @@ function renderTasks(day) {
           <div class="task-title">${t.label}</div>
           <div class="task-sub">${t.detail.replace(/\n/g, '<br>')}</div>
         </div>
-        <button class="task-delete" title="Remove task" data-id="${t.id}">✕</button>
-      `;
+        <button class="task-delete" title="Remove">✕</button>`;
+
       taskEl.querySelector('.cb').onclick = (e) => {
         e.stopPropagation();
         checked[t.id] = !checked[t.id];
@@ -407,14 +417,13 @@ function renderTasks(day) {
     area.appendChild(wrap);
   });
 
-  // Add Task button
+  // Add task button
   const addBtn = document.createElement('button');
   addBtn.className = 'add-btn';
-  addBtn.innerHTML = '+ add task to today';
+  addBtn.innerHTML = '+ add task';
   addBtn.onclick = () => { addFormOpen = true; renderTasks(day); };
   area.appendChild(addBtn);
 
-  // Add task form
   if (addFormOpen) {
     const form = document.createElement('div');
     form.className = 'add-form';
@@ -422,38 +431,32 @@ function renderTasks(day) {
       <select id="new-section">
         ${Object.entries(SECTION_META).map(([k,v]) => `<option value="${k}">${v.label}</option>`).join('')}
       </select>
-      <input id="new-title" type="text" placeholder="Task title (e.g. Read Polity chapter 3)" />
-      <textarea id="new-detail" placeholder="Details (optional — what exactly to do, sets/reps, links, etc.)"></textarea>
+      <input id="new-title" type="text" placeholder="Task title" />
+      <textarea id="new-detail" placeholder="Details — what exactly to do, sets/reps, resources etc."></textarea>
       <div class="form-row">
-        <button class="btn-save" id="save-new-task">Save Task</button>
+        <button class="btn-save" id="save-new-task">Save</button>
         <button class="btn-cancel" id="cancel-new-task">Cancel</button>
-      </div>
-    `;
+      </div>`;
     area.appendChild(form);
 
     document.getElementById('save-new-task').onclick = () => {
       const section = document.getElementById('new-section').value;
       const label = document.getElementById('new-title').value.trim();
       const detail = document.getElementById('new-detail').value.trim();
-      if (!label) { alert('Give the task a title'); return; }
+      if (!label) { alert('Add a title'); return; }
       const id = section + '_' + Date.now();
       tasksCache[day] = [...getTasks(day), { id, section, label, detail }];
       saveTasks(day, tasksCache[day]);
-      addFormOpen = null;
+      addFormOpen = false;
       showSaved();
       renderAll();
     };
-
-    document.getElementById('cancel-new-task').onclick = () => {
-      addFormOpen = null;
-      renderAll();
-    };
+    document.getElementById('cancel-new-task').onclick = () => { addFormOpen = false; renderTasks(day); };
   }
 
-  // Reset button
   const resetBtn = document.createElement('button');
   resetBtn.className = 'reset-day-btn';
-  resetBtn.textContent = 'reset today\'s checkboxes';
+  resetBtn.textContent = "reset today's checkboxes";
   resetBtn.onclick = () => {
     if (!confirm('Reset all checkboxes for today?')) return;
     checkedCache[day] = {};
@@ -464,6 +467,7 @@ function renderTasks(day) {
 }
 
 function renderAll() {
+  renderCountdown();
   renderNav();
   updateHeader(currentDay);
   renderTasks(currentDay);
@@ -471,14 +475,11 @@ function renderAll() {
 
 renderAll();
 
-// Auto-switch day at midnight
+// Auto day switch at midnight
 setInterval(() => {
   const d = new Date().getDay();
   const newDay = d === 0 ? 6 : d - 1;
-  if (newDay !== currentDay) {
-    currentDay = newDay;
-    renderAll();
-  }
+  if (newDay !== currentDay) { currentDay = newDay; renderAll(); }
 }, 60000);
 </script>
 </body>
