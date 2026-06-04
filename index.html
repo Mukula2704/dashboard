@@ -467,6 +467,7 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
       <h1>Hey, <em>let's get it.</em></h1>
       <div class="hdr-date" id="hdrDate"></div>
       <div id="liveClock"></div>
+      <div id="dailyQuote" style="font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:5px;font-style:italic;max-width:280px;line-height:1.5"></div>
     </div>
     <div class="hdr-right">
       <div class="exam-chip normal" id="examChip">OTA · Sept 13</div>
@@ -928,6 +929,15 @@ function openFocus(b,dur,withSound=true){
       showFocusView('focusGF');
       document.getElementById("fGFBadge").textContent=b.t;
       document.getElementById("fGFTitle").textContent="Time for Indu 💗";
+      const hsvg=document.querySelector('.gf-heart-svg');
+if(hsvg&&!hsvg._lpSet){
+  hsvg._lpSet=true;
+  let lt=null;
+  hsvg.addEventListener('touchstart',()=>{lt=setTimeout(()=>{document.getElementById('fGFSub').textContent='❤️ always in my corner, always on my mind ❤️';},600)});
+  hsvg.addEventListener('touchend',()=>clearTimeout(lt));
+  hsvg.addEventListener('mousedown',()=>{lt=setTimeout(()=>{document.getElementById('fGFSub').textContent='❤️ always in my corner, always on my mind ❤️';},600)});
+  hsvg.addEventListener('mouseup',()=>clearTimeout(lt));
+}
       document.getElementById("fGFSub").textContent=b.sub||'';
       document.getElementById("fGFDur").textContent=dur;
     } else if(cls==='blk-cds'||cls==='blk-class'){
@@ -1223,6 +1233,8 @@ function init(){
   const days2=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   document.getElementById("hdrDate").textContent=`${days2[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
   updateClock();setInterval(updateClock,1000);
+  const dq=QUOTES[new Date().getDay()%QUOTES.length];
+document.getElementById('dailyQuote').textContent='"'+dq+'"';
 
   // Day progress
   updateDayProgress();setInterval(updateDayProgress,60000);
