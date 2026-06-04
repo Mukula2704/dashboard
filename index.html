@@ -565,15 +565,16 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
   <div class="sec-head" style="margin-top:1.5rem">Daily study slots</div>
   <div class="cds-daily-table" id="cdsDaily"></div>
 </div>
-<div class="backup-bar">
+
+<!-- PROGRESS -->
+<div class="panel" id="panel-progress">
+  <div class="sec-head">Tracking</div>
+  <div class="backup-bar">
   <button class="backup-btn export" onclick="exportBackup()">⬇ Export backup</button>
   <button class="backup-btn import" onclick="document.getElementById('importFile').click()">⬆ Import backup</button>
   <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
   <div class="backup-info">Saves all habits, CDS progress, streaks & reminders as a .json file</div>
 </div>
-<!-- PROGRESS -->
-<div class="panel" id="panel-progress">
-  <div class="sec-head">Tracking</div>
   <div class="prog-grid">
     <div class="prog-card">
       <div class="prog-title">Body goals <small>update weekly</small></div>
