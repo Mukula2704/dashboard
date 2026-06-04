@@ -345,14 +345,6 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
   .countdown{font-size:1.6rem}
   .nav-btn{padding:12px 12px;font-size:10px}
 }
-  /* BACKUP */
-.backup-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;padding:12px 16px;background:rgba(26,17,24,0.8);border:1px solid var(--border);border-radius:10px}
-.backup-btn{padding:8px 16px;border-radius:8px;font-size:11px;letter-spacing:1px;font-family:var(--sans);cursor:pointer;font-weight:500;transition:all 0.2s;border:1px solid}
-.backup-btn.export{background:linear-gradient(135deg,var(--maroon),var(--deep));border-color:rgba(232,105,138,0.3);color:var(--cream)}
-.backup-btn.export:hover{background:linear-gradient(135deg,var(--pink),var(--maroon));transform:translateY(-1px)}
-.backup-btn.import{background:rgba(26,17,24,0.8);border-color:var(--border2);color:var(--muted2)}
-.backup-btn.import:hover{border-color:var(--rose);color:var(--text)}
-.backup-info{font-size:11px;color:var(--muted);flex:1}
 </style>
 </head>
 <body>
@@ -466,8 +458,6 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
       <h1>Hey, <em>let's get it.</em></h1>
       <div class="hdr-date" id="hdrDate"></div>
       <div id="liveClock"></div>
-      <div id="weatherBar" style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:4px"></div>
-      <div id="dailyQuote" style="font-size:10px;color:var(--muted);letter-spacing:0.5px;margin-top:5px;font-style:italic;max-width:280px;line-height:1.5"></div>
     </div>
     <div class="hdr-right">
       <div class="exam-chip normal" id="examChip">OTA · Sept 13</div>
@@ -571,12 +561,6 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
 <!-- PROGRESS -->
 <div class="panel" id="panel-progress">
   <div class="sec-head">Tracking</div>
-  <div class="backup-bar">
-  <button class="backup-btn export" onclick="exportBackup()">⬇ Export backup</button>
-  <button class="backup-btn import" onclick="document.getElementById('importFile').click()">⬆ Import backup</button>
-  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
-  <div class="backup-info">Saves all habits, CDS progress, streaks & reminders as a .json file</div>
-</div>
   <div class="prog-grid">
     <div class="prog-card">
       <div class="prog-title">Body goals <small>update weekly</small></div>
@@ -851,7 +835,66 @@ function showToast(icon,msg,time){
 function dismissToast(){document.getElementById("reminderToast").classList.remove("show");}
 
 // ── QUOTES ──
-const QUOTES=["No one who works hard regrets it. Everyone who quits does.","The body achieves what the mind believes. Keep going.","Discipline is choosing between what you want now and what you want most.","Every rep, every kilometre, every page — it compounds. Trust the process.","You're not tired, you're just uncomfortable. Push through.","September 13th is coming whether you're ready or not. Be ready.","The physique, the commission, the channel — all of it is built in the boring moments.","One day you'll look back and thank yourself for not quitting today.","Indu believes in you. Don't let yourself down.","Hard days build the foundation. Easy days are for people with average goals.","Stay locked in. Distractions are expensive.","Your future self is watching you right now. Make him proud."];
+const QUOTES=["No one who works hard regrets it. Everyone who quits does.","The stars on your shoulders aren't given; they are earned in the dark.",
+"September 13th doesn't care if your legs were shot from the 60km ride. Show up anyway.",
+"The Officers Training Academy is waiting for the man you are building right now. Do not keep them waiting.",
+"Sweat saves blood. The highway traffic today makes the drill square easier tomorrow.",
+"You are training to lead soldiers. Do not negotiate with your own weakness.",
+"A future officer doesn't complain about a 100g protein limit; he executes the mission with the rations he has.",
+"The uniform won't fit a man who quits when he's tired.",
+"Every CDS previous year’s question you solve is one step closer to the merit list.",
+"They are looking for elite mental grit. Your 45-day survival plan is exactly that.",
+"You want the Special Forces? Then start treating this commute like your selection course.",
+"The work you do in the shadows on the highway will show in the light on the parade ground.",
+"The potholes and the traffic are just resistance training for your mind. Keep pedaling.",
+"Your legs are burning on the pedals because the fat is leaving. Don't stop.",
+"No Greek God illusions. Just a rugged, tactical athlete being forged day by day.",
+"The barbell doesn't care about your commute. Move the weight.",
+"You don't need motivation when you have a 45-day deadline. Execute the split.",
+"Vehicle days are your shield. Cycle days are your sword. Use them tactically.",
+"Sleep is a weapon. 8 hours is a tactical requirement, not a luxury.",
+"The fatigue you feel at kilometer 45 is where the average man breaks. You are not average.",
+"The dark circles will fade when you lock in the sleep. The muscle you build will stay forever.",
+"A 72-hour fast proved your mind controls your body. Don't forget you have that power.",
+"Embrace the suck. The heavier the squats feel on Saturday night, the closer you are to the breakthrough.",
+"Clearing backlogs and writing code—it’s all part of the same mental endurance test.",
+"A flawless CI/CD pipeline requires the exact same precision as your workout split.",
+"2027 is the target. Every study session, every cleared subject, secures the perimeter.",
+"Building a Hyperledger voting system takes architecture. So does building a tactical body.",
+"You control the infrastructure of your life, just like Terraform. Code it right.",
+"Don't let the capstone project slip. Officers execute on all fronts simultaneously.",
+"Debug your mindset the same way you debug a smart contract. Find the error, patch it, and run it again.",
+"Indu is watching you become the man you promised her you'd be. Don't stop.",
+"Build the physique, earn the commission, and give Indu the life she deserves.",
+"Mom needs a role model for her channel. Show her what relentless consistency looks like.",
+"Be the rock Mom can lean on. Your strength elevates your whole family.",
+"Engraved rings and surprises are beautiful, but your uncompromising discipline is the greatest gift you can offer Indu.",
+"When the ride gets too heavy, remember whose name is on the line. Do it for Indu.",
+"Financial freedom for Mom starts with the investments and the discipline you build today.",
+"The silver pendant is just a symbol; the real gift to Indu is the uncompromising, elite man you are becoming.",
+"When the commute feels too long, think about the exact future you and Indu are building together. That is the real destination.",
+"Mom is watching your daily grind. Show her that the same dedication it takes to build a secure portfolio is what it takes to build an unbreakable body.",
+"Every time you push past the pain barrier on those pedals, you are forging a stronger protector for Indu.",
+"Those anniversaries you plan for Indu deserve a man who is disciplined enough to lead. Be that man.",
+"You are managing Mom's financial future while building your own physical resilience. Carry the weight for your family, and keep carrying it.",
+"Indu deserves the absolute best, most hardened version of you. Do not let a little highway fatigue stand in the way of giving her that.",
+"Mom's success as a creator and your success on the military parade ground are fueled by the exact same fire. Lead the charge for both of you.",
+"When you feel like skipping the heavy leg session, remember that Indu's belief in you is non-negotiable. Match her belief with your actions.",
+"Your family's legacy shifts with you. The sweat you pour onto the asphalt today buys the freedom and security they will rely on tomorrow.",
+"There is no biological difference between you and the men who succeed, only a difference in grit.",
+"Motivation fades when the alarm goes off. Discipline puts your feet on the floor.",
+"The pain of discipline weighs ounces. The pain of regret weighs tons.",
+"No one is coming to ride the 30km for you. Own it.",
+"Stop negotiating with the voice in your head that wants comfort. It is your enemy.",
+"45 days. No cheating. No excuses. Just ruthless execution.",
+"You are Mukul A. Act like it.",
+"If it were easy, everyone would have the commission and the athletic core.",
+"You can either have excuses or results. You can never have both.",
+"Do not lower your goals to meet your budget. Raise your discipline to meet your goals.",
+"You survived today. Now eat your rice, sleep your 8 hours, and prepare to go to war again tomorrow.",
+"Nobody cares how tired you are. Let your results do the talking.",
+"Let them sleep. Let them walk. You have a cycle to catch and a future to claim.",
+"Your body is listening to everything your mind says. Tell it to push harder.","The body achieves what the mind believes. Keep going.","Discipline is choosing between what you want now and what you want most.","Every rep, every kilometre, every page — it compounds. Trust the process.","You're not tired, you're just uncomfortable. Push through.","September 13th is coming whether you're ready or not. Be ready.","The physique, the commission, the channel — all of it is built in the boring moments.","One day you'll look back and thank yourself for not quitting today.","Indu believes in you. Don't let yourself down.","Hard days build the foundation. Easy days are for people with average goals.","Stay locked in. Distractions are expensive.","Your future self is watching you right now. Make him proud."];
 function getQuote(){return QUOTES[Math.floor(Math.random()*QUOTES.length)];}
 
 // ── COURSE NAMES ──
@@ -870,14 +913,6 @@ function openFocus(b,dur,withSound=true){
       showFocusView('focusGF');
       document.getElementById("fGFBadge").textContent=b.t;
       document.getElementById("fGFTitle").textContent="Time for Indu 💗";
-      const hsvg=document.querySelector('.gf-heart-svg');
-      if(hsvg&&!hsvg._lpSet){
-        hsvg._lpSet=true;let lt=null;
-        hsvg.addEventListener('touchstart',()=>{lt=setTimeout(()=>{document.getElementById('fGFSub').textContent='❤️ always in my corner, always on my mind ❤️';},600)});
-        hsvg.addEventListener('touchend',()=>clearTimeout(lt));
-        hsvg.addEventListener('mousedown',()=>{lt=setTimeout(()=>{document.getElementById('fGFSub').textContent='❤️ always in my corner, always on my mind ❤️';},600)});
-        hsvg.addEventListener('mouseup',()=>clearTimeout(lt));
-      }
       document.getElementById("fGFSub").textContent=b.sub||'';
       document.getElementById("fGFDur").textContent=dur;
     } else if(cls==='blk-cds'||cls==='blk-class'){
@@ -1173,8 +1208,6 @@ function init(){
   const days2=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   document.getElementById("hdrDate").textContent=`${days2[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
   updateClock();setInterval(updateClock,1000);
-  const dq=QUOTES[new Date().getDay()%QUOTES.length];
-  document.getElementById('dailyQuote').textContent='"'+dq+'"';
 
   // Day progress
   updateDayProgress();setInterval(updateDayProgress,60000);
@@ -1182,14 +1215,8 @@ function init(){
   // Today
   const tk=todayKey();
   makeTl(DAYS[tk].blocks,document.getElementById("todayTl"),true);
- const dayNotes={Mon:"Vehicle day — hard gym session. Big YouTube block in the afternoon gap.",Tue:"Cycle day — hard core gym, then massive YouTube block.",Wed:"Vehicle day — hard pull session. Wednesday has the biggest CDS gap (9am–1pm = 4 hrs).",Thu:"Cycle day — YouTube 9–12:05, then SEAD→OS→gap→AI→EDA. Get YouTube done early.",Fri:"Cycle day — hard core session. English + mock practice day for CDS.",Sat:"Vehicle day — 2 AI classes then free. YouTube + CDS mock. Hard legs evening.",Sun:"Full rest. No gym. Mock test in the morning, plan the week ahead."};
-const dateKeyNote=now.toDateString();
-const savedHabNote=JSON.parse(localStorage.getItem("hab_"+dateKeyNote)||"{}");
-const habDoneCount=HABITS.filter((_,i)=>!!savedHabNote[i]).length;
-const streaksNote=computeStreaks();
-const streakMsg=streaksNote.gym>=3?` 🔥 ${streaksNote.gym} day gym streak!`:'';
-const habMsg=habDoneCount>0?` ${habDoneCount}/${HABITS.length} habits done today.`:'';
-document.getElementById("todayNote").textContent=(dayNotes[tk]||'')+habMsg+streakMsg;
+  document.getElementById("todayNote").textContent={Mon:"Vehicle day — hard gym session. Big YouTube block in the afternoon gap.",Tue:"Cycle day — hard core gym, then massive 1–4pm YouTube block.",Wed:"Vehicle day — hard pull session. Wednesday has the biggest CDS gap (9am–1pm = 4 hrs).",Thu:"Cycle day — YouTube 9–12:05 (3 hrs), then SEAD 12:05, OS 1:10, gap, AI 3:10, EDA 4:15. Get YouTube done early.",Fri:"Cycle day — hard core session. Friday = English + mock practice day for CDS.",Sat:"Vehicle day (8am class). Drive in, 2 AI classes, drive back. Afternoon = YouTube + CDS mock. Evening = hard legs at gym.",Sun:"Full rest. No gym — legs recovering. Mock test in the morning, plan the week ahead."}[tk]||"";
+
   // Week
   const dayRow=document.getElementById("dayPills");let activeWeekDay=tk;
   WEEK.forEach(k=>{
@@ -1250,56 +1277,7 @@ document.getElementById("todayNote").textContent=(dayNotes[tk]||'')+habMsg+strea
   scheduleCustomReminders();
   renderReminderList();
 }
-// ── BACKUP ──
-function exportBackup(){
-  const data={};
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-    data[k]=localStorage.getItem(k);
-  }
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const date=new Date().toISOString().slice(0,10);
-  a.href=url;a.download=`dashboard_backup_${date}.json`;
-  a.click();URL.revokeObjectURL(url);
-  showToast('💾','Backup downloaded!','Keep this file safe');
-  playBeep(880,'sine',0.15,0.2);
-}
 
-function importBackup(event){
-  const file=event.target.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=JSON.parse(e.target.result);
-      Object.entries(data).forEach(([k,v])=>localStorage.setItem(k,v));
-      showToast('✅','Backup restored!','All your data is back');
-      playBeep(1100,'sine',0.15,0.2);
-      setTimeout(()=>location.reload(),1500);
-    }catch(err){
-      showToast('❌','Import failed','File might be corrupted');
-    }
-  };
-  reader.readAsText(file);
-  event.target.value='';
-}
-  // ── WEATHER ──
-async function loadWeather(){
-  try{
-    const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=12.97&longitude=77.59&current=temperature_2m,weathercode,precipitation_probability');
-    const d=await r.json();
-    const temp=Math.round(d.current.temperature_2m);
-    const rain=d.current.precipitation_probability;
-    const code=d.current.weathercode;
-    const icon=code<=1?'☀️':code<=3?'⛅':code<=67?'🌧':code<=77?'🌨':'⛈';
-    const rainMsg=rain>=60?` · 🌧 ${rain}% rain — check before cycling`:'';
-    document.getElementById('weatherBar').textContent=`${icon} ${temp}°C${rainMsg}`;
-  }catch(e){document.getElementById('weatherBar').textContent='🌤 weather unavailable';}
-}
-loadWeather();
-  
 init();
 </script>
 </body>
