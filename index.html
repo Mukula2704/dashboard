@@ -7,6 +7,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️‍🔥</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
+  @keyframes cycleWait{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-8px) rotate(5deg)}}
+@keyframes gymDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
 :root{
   --bg:#0c0809;--surface:rgba(26,17,24,0.85);--surface2:rgba(36,25,32,0.9);--surface3:#2e1f28;--surface-solid:#1a1118;
   --border:rgba(255,180,200,0.08);--border2:rgba(255,180,200,0.18);--border3:rgba(255,180,200,0.3);
@@ -570,6 +572,104 @@ main{padding:1.75rem 2rem 5rem;position:relative;z-index:1;width:100%}
 
 <!-- PROGRESS -->
 <div class="panel" id="panel-progress">
+  <!-- CYCLE TRANSFORMATION TIMER -->
+<div id="cycleTimer" style="margin-bottom:1.5rem">
+
+  <div style="background:rgba(26,17,24,0.95);border:1px solid rgba(255,180,200,0.08);border-radius:18px;overflow:hidden">
+    <div id="timerTopBar" style="height:3px;width:100%;background:rgba(122,100,112,0.25);transition:background .5s"></div>
+
+    <div style="padding:1.2rem 1.4rem;border-bottom:1px solid rgba(255,180,200,0.08);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">60-day transformation</div>
+        <div style="font-family:var(--serif);font-size:1.4rem;color:var(--cream);line-height:1" id="timerHdrTitle">Cycle not arrived yet</div>
+        <div style="font-size:11px;color:var(--muted2);margin-top:4px" id="timerHdrSub">Flip the switch when your cycle arrives — Day 1 locks in.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center" id="timerToggleLabel">Cycle arrived?</div>
+        <label style="position:relative;width:56px;height:28px;cursor:pointer;display:block">
+          <input type="checkbox" id="cycleSwitch" onchange="handleCycleSwitch()" style="opacity:0;width:0;height:0;position:absolute">
+          <div id="timerTrack" style="position:absolute;inset:0;border-radius:14px;background:rgba(46,31,40,0.9);border:1px solid rgba(255,180,200,0.2);transition:all .35s"></div>
+          <div id="timerThumb" style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted2);transition:all .35s;z-index:1;font-size:11px;display:flex;align-items:center;justify-content:center">🚴</div>
+        </label>
+      </div>
+    </div>
+
+    <!-- PENDING -->
+    <div id="timerPending" style="padding:1.4rem;text-align:center">
+      <div style="font-size:3rem;display:block;animation:cycleWait 2s ease-in-out infinite;margin-bottom:.75rem">🚲</div>
+      <div style="font-family:var(--serif);font-size:1.3rem;color:var(--muted2);margin-bottom:.5rem">Waiting for the cycle…</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;max-width:320px;margin:0 auto .75rem">The 60-day fat-loss clock hasn't started yet. Gym is running, lifts are being logged. The moment that cycle arrives, flip the switch and the real mission begins.</div>
+      <div style="font-size:11px;color:#88ddcc;background:rgba(136,221,204,0.06);border:1px solid rgba(136,221,204,0.15);padding:8px 14px;border-radius:10px;display:inline-block;line-height:1.6">Expected arrival: this Sunday · ~Jun 8, 2026</div>
+      <div style="margin-top:1rem;display:flex;align-items:center;gap:8px;justify-content:center;font-size:11px;color:var(--rose)">
+        <div style="width:7px;height:7px;border-radius:50%;background:var(--rose);animation:gymDot 1.5s ease-in-out infinite"></div>
+        Gym sessions running · progressive overload active
+      </div>
+    </div>
+
+    <!-- ACTIVE -->
+    <div id="timerActive" style="padding:1.4rem;display:none">
+
+      <div style="text-align:center;margin-bottom:1.4rem;padding:1.2rem;background:rgba(36,25,32,0.7);border:1px solid rgba(255,180,200,0.08);border-radius:14px;position:relative;overflow:hidden">
+        <div style="font-family:var(--serif);font-size:4rem;color:var(--rose);line-height:1;text-shadow:0 0 30px rgba(232,105,138,0.3)" id="timerDayNum">1</div>
+        <div style="font-size:12px;color:var(--muted2);margin-top:2px">of 65 days</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;letter-spacing:.5px" id="timerStarted">Started —</div>
+      </div>
+
+      <div style="margin-bottom:1.4rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)">Transformation progress</div>
+          <div style="font-size:11px;color:var(--rose);font-weight:600" id="timerPct">0%</div>
+        </div>
+        <div style="height:6px;background:rgba(46,31,40,0.8);border-radius:3px;overflow:hidden;position:relative">
+          <div id="timerBar" style="height:100%;border-radius:3px;background:linear-gradient(90deg,var(--deep),var(--maroon),var(--pink),var(--rose));width:0%;transition:width 1.4s cubic-bezier(.22,1,.36,1)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px">
+          <div style="font-size:9px;color:var(--muted);flex:1;text-align:left" id="timerPm1">Upper Peel D1–30</div>
+          <div style="font-size:9px;color:var(--muted);flex:1;text-align:center" id="timerPm2">Deep Burn D31–45</div>
+          <div style="font-size:9px;color:var(--muted);flex:1;text-align:right" id="timerPm3">Dream Window D46–65</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.2rem">
+        <div style="background:rgba(36,25,32,0.7);border:1px solid rgba(255,180,200,0.08);border-radius:10px;padding:.9rem;text-align:center">
+          <div style="font-family:var(--serif);font-size:1.6rem;color:var(--rose);line-height:1" id="timerDaysLeft">65</div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Days left</div>
+        </div>
+        <div style="background:rgba(36,25,32,0.7);border:1px solid rgba(255,180,200,0.08);border-radius:10px;padding:.9rem;text-align:center">
+          <div style="font-family:var(--serif);font-size:1.6rem;color:var(--rose);line-height:1" id="timerWeeks">9</div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Weeks left</div>
+        </div>
+        <div style="background:rgba(36,25,32,0.7);border:1px solid rgba(255,180,200,0.08);border-radius:10px;padding:.9rem;text-align:center">
+          <div style="font-family:var(--serif);font-size:1.6rem;color:var(--rose);line-height:1" id="timerDaysIn">1</div>
+          <div style="font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px">Days in</div>
+        </div>
+      </div>
+
+      <div id="timerPhaseCards"></div>
+
+      <div id="timerMallCard" style="display:none;background:rgba(36,25,32,0.7);border:1px solid rgba(255,180,200,0.08);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem">
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#ffcc88;margin-bottom:8px;font-weight:600">Mall strategy — active</div>
+        <div style="font-size:11px;color:var(--muted2);line-height:1.7">🍳 Eat curd before leaving · pack 4 boiled eggs in Tupperware<br>🔒 Heavy U-lock only — cable locks get cut in seconds<br>💧 Electral water · 35km in Bangalore heat = serious sweat<br>📍 Destination locked = no way to skip the return ride</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONFIRM -->
+  <div id="timerConfirm" style="display:none;margin-top:1rem;background:rgba(36,25,32,0.97);border:1px solid rgba(232,105,138,0.35);border-radius:16px;padding:1.2rem;text-align:center">
+    <div style="font-size:2rem;margin-bottom:.5rem">🚴‍♂️</div>
+    <div style="font-family:var(--serif);font-size:1.2rem;color:var(--cream);margin-bottom:.4rem">Cycle is here. Lock in Day 1?</div>
+    <div style="font-size:11px;color:var(--muted2);margin-bottom:1rem;line-height:1.6">Today becomes Day 1 of your 60-day transformation. This can't be undone — the clock starts now.</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button onclick="confirmCycleYes()" style="background:linear-gradient(135deg,#8b2246,#5c1030);border:1px solid rgba(232,105,138,0.3);border-radius:10px;padding:9px 24px;font-size:12px;color:#f7eaee;cursor:pointer;font-family:var(--sans);font-weight:600">Yes — start the clock 🔥</button>
+      <button onclick="confirmCycleNo()" style="background:rgba(26,17,24,0.8);border:1px solid rgba(255,180,200,0.15);border-radius:10px;padding:9px 20px;font-size:12px;color:#7a6470;cursor:pointer;font-family:var(--sans)">Not yet</button>
+    </div>
+  </div>
+
+  <div style="text-align:right;margin-top:.5rem">
+    <button onclick="resetCycleTimer()" style="background:none;border:none;font-size:10px;color:rgba(122,100,112,0.4);cursor:pointer;font-family:var(--sans);letter-spacing:1px">reset clock</button>
+  </div>
+</div>
   <div class="backup-bar">
   <button class="backup-btn export" onclick="exportBackup()">⬇ Export backup</button>
   <button class="backup-btn import" onclick="document.getElementById('importFile').click()">⬆ Import backup</button>
@@ -845,6 +945,9 @@ function showToast(icon,msg,time){
   const bar=document.getElementById("toastBar");
   bar.style.animation="none";bar.offsetHeight;bar.style.animation="toastDrain 8s linear forwards";
   toast.classList.add("show");
+  if(Notification.permission==="granted"){
+  new Notification("Dashboard reminder",{body:msg,icon:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏰</text></svg>"});
+}
   if(toastTimer)clearTimeout(toastTimer);
   toastTimer=setTimeout(dismissToast,8000);
 }
@@ -1233,7 +1336,7 @@ function init(){
   const days2=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
   document.getElementById("hdrDate").textContent=`${days2[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
   updateClock();setInterval(updateClock,1000);
-  const dq=QUOTES[new Date().getDay()%QUOTES.length];
+  const dq=QUOTES[Math.floor(Date.now()/86400000)%QUOTES.length];
 document.getElementById('dailyQuote').textContent='"'+dq+'"';
 
   // Day progress
@@ -1310,6 +1413,7 @@ document.getElementById("todayNote").textContent=(dayNotes[tk]||'')+habMsg+strea
   scheduleCustomReminders();
   renderReminderList();
 }
+  
 // ── BACKUP ──
 function exportBackup(){
   const data={};
@@ -1345,7 +1449,94 @@ function importBackup(event){
   reader.readAsText(file);
   event.target.value='';
 }
+  if("Notification" in window && Notification.permission === "default"){
+  Notification.requestPermission();
+}
+  updateCycleTimer();
 init();
+  // ── CYCLE TIMER ──
+const CYCLE_PHASES=[
+  {name:"Phase 1 — Upper Peel",days:"Day 1–30",color:"rgba(139,34,70,0.08)",border:"rgba(232,105,138,0.2)",bullets:["Upper abs go from soft bumps to hard edges","Shoulders look wider as waist shrinks","Face loses puffiness — 8hrs sleep doing its job","Vehicle days = muscle preservation shield"]},
+  {name:"Phase 2 — Deep Burn",days:"Day 31–45",color:"rgba(255,204,136,0.06)",border:"rgba(255,204,136,0.2)",bullets:["+10km cycling added — mall ride-outs begin","Lower belly visibly flattening","Look like a completely different person by Day 45","Body now hitting stubborn lower fat reserves"]},
+  {name:"Phase 3 — Dream Window",days:"Day 46–65",color:"rgba(136,221,204,0.06)",border:"rgba(136,221,204,0.2)",bullets:["Love handles finally flatten out","Lower abs start showing — not just upper two","Sharp cuts appear between abs","Body has no choice — final fat stores get scorched"]},
+];
+
+function getCycleDaysSince(startStr){
+  const now=new Date();now.setHours(0,0,0,0);
+  const start=new Date(startStr);start.setHours(0,0,0,0);
+  return Math.floor((now-start)/86400000)+1;
+}
+function formatCycleDate(d){
+  const m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()}`;
+}
+function getCyclePhase(d){return d<=30?0:d<=45?1:2;}
+
+function updateCycleTimer(){
+  const active=localStorage.getItem("cycle_active")==="true";
+  const startStr=localStorage.getItem("cycle_start_date");
+  document.getElementById("timerPending").style.display=active?"none":"block";
+  document.getElementById("timerActive").style.display=active?"block":"none";
+  document.getElementById("timerTopBar").style.background=active?"linear-gradient(90deg,var(--deep),var(--maroon),var(--pink),var(--rose))":"rgba(122,100,112,0.25)";
+  document.getElementById("cycleSwitch").checked=active;
+  document.getElementById("timerThumb").textContent=active?"✓":"🚴";
+  document.getElementById("timerTrack").style.background=active?"linear-gradient(135deg,var(--maroon),var(--pink))":"rgba(46,31,40,0.9)";
+  if(active&&startStr){
+    const dayNum=Math.min(getCycleDaysSince(startStr),65);
+    const pct=Math.round((dayNum/65)*100);
+    const dLeft=Math.max(0,65-dayNum+1);
+    const phase=getCyclePhase(dayNum);
+    document.getElementById("timerDayNum").textContent=dayNum;
+    document.getElementById("timerStarted").textContent="Started "+formatCycleDate(new Date(startStr));
+    document.getElementById("timerPct").textContent=pct+"%";
+    setTimeout(()=>{document.getElementById("timerBar").style.width=pct+"%";},200);
+    document.getElementById("timerDaysLeft").textContent=dLeft;
+    document.getElementById("timerWeeks").textContent=Math.ceil(dLeft/7);
+    document.getElementById("timerDaysIn").textContent=dayNum;
+    document.getElementById("timerHdrTitle").textContent="Day "+dayNum+" of 65";
+    document.getElementById("timerHdrSub").textContent=phase===0?"Phase 1: Upper Peel underway":phase===1?"Phase 2: Deep Burn — mall strategy active":"Phase 3: Dream Window — almost there";
+    document.getElementById("timerToggleLabel").textContent="Cycle active";
+    ["timerPm1","timerPm2","timerPm3"].forEach((id,i)=>{
+      document.getElementById(id).style.color=i===phase?"var(--rose)":"var(--muted)";
+    });
+    document.getElementById("timerMallCard").style.display=phase>=1?"block":"none";
+    const pc=document.getElementById("timerPhaseCards");pc.innerHTML="";
+    CYCLE_PHASES.forEach((p,i)=>{
+      const isPast=i<phase,isCurrent=i===phase;
+      const badge=isCurrent?`<span style="font-size:8px;letter-spacing:2px;padding:2px 8px;border-radius:10px;background:rgba(232,105,138,0.15);color:var(--pink);border:1px solid rgba(232,105,138,0.25)">NOW</span>`:isPast?`<span style="font-size:8px;padding:2px 8px;border-radius:10px;background:rgba(136,221,204,0.1);color:#88ddcc;border:1px solid rgba(136,221,204,0.2)">✓ done</span>`:`<span style="font-size:8px;padding:2px 8px;border-radius:10px;background:rgba(46,31,40,0.6);color:var(--muted);border:1px solid rgba(255,180,200,0.08)">upcoming</span>`;
+      const el=document.createElement("div");
+      el.style.cssText=`background:${p.color};border:1px solid ${p.border};border-radius:12px;padding:1rem 1.2rem;margin-bottom:.75rem;opacity:${isPast?".6":"1"}`;
+      el.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px"><div style="font-family:var(--serif);font-size:1rem;color:${isCurrent?"var(--rose)":"var(--cream)"}">${p.name}</div><div style="display:flex;align-items:center;gap:6px"><div style="font-size:9px;padding:3px 10px;border-radius:15px;background:rgba(36,25,32,0.8);border:1px solid rgba(255,180,200,0.08);color:var(--muted2)">${p.days}</div>${badge}</div></div><div style="display:flex;flex-direction:column;gap:4px">${p.bullets.map(b=>`<div style="font-size:11px;color:var(--muted);padding-left:14px;position:relative;line-height:1.5"><span style="position:absolute;left:0;color:var(--rose);font-size:10px">→</span>${b}</div>`).join("")}</div>`;
+      pc.appendChild(el);
+    });
+  }
+}
+
+function handleCycleSwitch(){
+  const sw=document.getElementById("cycleSwitch");
+  if(sw.checked&&localStorage.getItem("cycle_active")!=="true"){
+    sw.checked=false;
+    document.getElementById("timerConfirm").style.display="block";
+    document.getElementById("timerConfirm").scrollIntoView({behavior:"smooth",block:"center"});
+  }
+}
+function confirmCycleYes(){
+  localStorage.setItem("cycle_start_date",new Date().toISOString().split("T")[0]);
+  localStorage.setItem("cycle_active","true");
+  document.getElementById("timerConfirm").style.display="none";
+  updateCycleTimer();
+  playChime();
+}
+function confirmCycleNo(){
+  document.getElementById("timerConfirm").style.display="none";
+  document.getElementById("cycleSwitch").checked=false;
+}
+function resetCycleTimer(){
+  if(!confirm("Reset the transformation clock?"))return;
+  localStorage.removeItem("cycle_start_date");
+  localStorage.removeItem("cycle_active");
+  updateCycleTimer();
+}
 </script>
 </body>
 </html>
